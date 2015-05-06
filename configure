@@ -168,7 +168,7 @@ do
 		--with-globus-path)
 			shift
 			globus_path=$1
-			config_globus_path=yes
+			config_globus_path=no
 			;;
 		--globus-flavor)
 			shift
@@ -192,7 +192,7 @@ do
 		--with-mysql-path)
 			shift
 			mysql_path=$1
-			config_mysql_path=yes
+			config_mysql_path=no
 			;;
 		--with-perl-path)
 			shift
