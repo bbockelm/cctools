@@ -664,10 +664,13 @@ static void cvmfs_read_config()
 		debug(D_CVMFS|D_NOTICE, "No global CVMFS configuration found. To enable CVMFS access, you must configure PARROT_CVMFS_CONFIG.");
 		return;
 	}
+    std::string cvmfs_global_options_with_lock(cvmfs_global_options);
+    cvmfs_global_options_with_lock += ",lock_directory="; 
+    cvmfs_global_options_with_lock += pfs_cvmfs_locks_dir;
 
-	debug(D_CVMFS|D_DEBUG, "Using CVMFS global options: %s", cvmfs_global_options);
+	debug(D_CVMFS|D_DEBUG, "Using CVMFS global options: %s", cvmfs_global_options_with_lock.c_str());
 
-	const int init_retval = cvmfs_init(cvmfs_global_options);
+	const int init_retval = cvmfs_init(cvmfs_global_options_with_lock.c_str());
 	if (init_retval != 0) {
 		debug(D_CVMFS, "ERROR: failed to initialize cvmfs (%d)", init_retval);
 		return;
@@ -942,7 +945,7 @@ static bool path_expand_symlink(struct pfs_name *path, struct pfs_name *xpath)
 
 			if(sscanf(link_target, "/cvmfs/%[^/]%[^\n]", xpath->host, path_head) < 1)
 			{
-				errno = EXDEV;
+				errno = ENOENT;
 				return false;
 			}
 
